@@ -14,8 +14,9 @@ public class GiteeProvider {
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
 
         OkHttpClient client = new OkHttpClient();
-
+        System.out.println("creat okhttpclient ");
         RequestBody body = RequestBody.create(mediaType,JSON.toJSONString(accessTokenDTO));
+        System.out.println("get json ");
         Request request = new Request.Builder()
                 .url("https://gitee.com/oauth/token")
                 .post(body)
@@ -24,7 +25,7 @@ public class GiteeProvider {
             Response response = client.newCall(request).execute();
             String string = response.body().string();
             String accessToken = JSON.parseObject(string).getString("access_token");
-            System.out.println(accessToken);
+            System.out.println("token——>"+accessToken);
             return accessToken;
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,6 +40,7 @@ public class GiteeProvider {
         try {
             Response response = client.newCall(request).execute();
             String string =response.body().string();
+            System.out.println("this -"+string);
             GiteeUser giteeUser = JSON.parseObject(string, GiteeUser.class);
             return giteeUser;
 

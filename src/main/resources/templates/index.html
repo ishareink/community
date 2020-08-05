@@ -21,7 +21,6 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
             <form class="navbar-form navbar-left">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="搜索问题">
@@ -29,15 +28,17 @@
                 <button type="submit" class="btn btn-default">搜索</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="https://gitee.com/oauth/authorize?client_id=aec56402ef95f556823a169d5e8b916c030ad0d50a2f585fed2bb24a2eb28f56&redirect_uri=http://localhost:8088/callback&response_type=code">登录</a></li>
-                <li class="dropdown">
+                <li class="dropdown" th:if="${session.user!=null}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">我<span class="caret"></span></a>
+                        aria-expanded="false" th:text="${session.user.getName()}"><span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#">消息中心</a></li>
                         <li><a href="#">个人资料</a></li>
                         <li><a href="#">退出登录</a></li>
                     </ul>
+                </li>
+                <li th:if="${session.user==null}">
+                    <a href="https://gitee.com/oauth/authorize?client_id=177ab9c2f78e24ecb464b0bda7a78bebc31bf82f15caa1619c9273f8c44514b2&redirect_uri=http://localhost:8088/callback&response_type=code">登录</a>
                 </li>
             </ul>
         </div>

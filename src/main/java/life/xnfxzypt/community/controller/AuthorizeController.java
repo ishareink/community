@@ -2,12 +2,17 @@ package life.xnfxzypt.community.controller;
 
 import life.xnfxzypt.community.dto.AccessTokenDTO;
 import life.xnfxzypt.community.dto.GiteeUser;
+import life.xnfxzypt.community.mapper.UserMapper;
+import life.xnfxzypt.community.model.User;
 import life.xnfxzypt.community.provider.GiteeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @Controller
 public class AuthorizeController {//认证的controller
@@ -23,8 +28,12 @@ public class AuthorizeController {//认证的controller
     @Value("${gitee.redirect_uri}")
     private String redirectUri;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @GetMapping("/callback")
-    public String callback(@RequestParam(name="code")String code){
+    public String callback(@RequestParam(name="code") String code,
+                           HttpServletRequest request){
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
@@ -32,8 +41,23 @@ public class AuthorizeController {//认证的controller
         accessTokenDTO.setRedirect_uri(redirectUri);
 
         String accessToken = giteeProvider.getAccessToken(accessTokenDTO);
-        GiteeUser user =giteeProvider.getUser(accessToken);
-        System.out.println(user.getName());
-        return "index";
+        GiteeUser giteeUser =giteeProvider.getUser(accessToken);
+        System.out.println("username——>"+giteeUser.getName());
+        if(giteeUser!=null){
+            User user = new User();
+            user.setToken(UUID.randomUUID().toString());
+            user.setName(giteeUser.getName());
+            user.setAccount_id(String.valueOf(giteeUser.getId()));
+            user.setGmt_create(System.currentTimeMillis());
+            user.setGmt_modified(user.getGmt_create());
+            userMapper.insert(user);
+            //登陆成功，写cookies和session
+            request.getSession().setAttribute("user",giteeUser);
+            //redirect——跳转
+            return "redirect:/";
+        }else{
+            //登陆失败,重新登录
+            return "redirect:/";
+        }
     }
 }
