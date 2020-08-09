@@ -32,3 +32,6 @@ logs/
 
 ### file ###
 application.properties
+
+### flyway ###
+src/main/resources/db/
