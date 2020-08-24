@@ -35,7 +35,8 @@ public class GiteeProvider {
     public GiteeUser getUser(String accessToken){
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("https://gitee.com/api/v5/user?access_token="+accessToken)
+                .url("https://gitee.com/api/v5/user?")
+                .header("Authorization","token "+accessToken)
                 .build();
         try {
             Response response = client.newCall(request).execute();

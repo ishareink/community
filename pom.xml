@@ -70,6 +70,7 @@
             <version>1.2.68</version>
         </dependency>
 
+
 	</dependencies>
 
 	<build>
@@ -88,7 +89,7 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>5.2.4</version>
                 <configuration>
-                    <url>jdbc:mysql://localhost:3306/community?useSSL=false&amp;serverTimezone=UTC</url>
+                    <url>jdbc:mysql://localhost:3306/community?allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=UTC</url>
                     <user>root</user>
                     <password></password>
                 </configuration>

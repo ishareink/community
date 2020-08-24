@@ -46,7 +46,7 @@ public class AuthorizeController {//认证的controller
         String accessToken = giteeProvider.getAccessToken(accessTokenDTO);
         GiteeUser giteeUser =giteeProvider.getUser(accessToken);
         System.out.println("username——>"+giteeUser.getName());
-        if(giteeUser!=null){
+        if(giteeUser!=null&&giteeUser.getId()!=null){
             User user = new User();
             String token = UUID.randomUUID().toString();
             user.setToken(token);
@@ -54,6 +54,7 @@ public class AuthorizeController {//认证的controller
             user.setAccount_id(String.valueOf(giteeUser.getId()));
             user.setGmt_create(System.currentTimeMillis());
             user.setGmt_modified(user.getGmt_create());
+            user.setAvatar_url(giteeUser.getAvatar_url());
             userMapper.insert(user);
             //登陆成功，写cookies和session
             response.addCookie(new Cookie("token",token));
