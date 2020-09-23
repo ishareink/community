@@ -78,15 +78,10 @@ public class PaginationDTO {
         this.questions = questions;
     }
 
-    public void setPagiation(Integer totalCount, Integer page, Integer size) {
-
+    public void setPagiation(Integer totalPage, Integer page) {
+        this.totalPage=totalPage;
         this.page=page;
 
-        if (totalCount%size == 0){
-            totalPage = totalCount/size;
-        }else{
-            totalPage=totalCount/size+1;
-        }
         pages.add(page);//当前页码
         for(int i=1;i<=3;i++){
             if(page-i>0){
