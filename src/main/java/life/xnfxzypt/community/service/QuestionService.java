@@ -94,5 +94,14 @@ public class QuestionService {
 
         return paginationDTO;
     }
+
+    public QuestionDTO getById(Integer id) {
+        Question question= quesstionMapper.getById(id);
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question, questionDTO);//内置的工具，快速得把对象1属性拷贝到2
+        User user = userMapper.findById(question.getCreator());
+        questionDTO.setUser(user);
+        return questionDTO;
+    }
     //当一个请求需要组装user和question的时候，需要一个中间层去做这件事
 }
