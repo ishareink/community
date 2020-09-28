@@ -103,5 +103,19 @@ public class QuestionService {
         questionDTO.setUser(user);
         return questionDTO;
     }
+
+    public void createOrUpdate(Question question) {
+        //not exit
+        if(question==null){
+            question.setGmt_create(System.currentTimeMillis());
+            question.setGmt_modified(question.getGmt_create());
+            quesstionMapper.create(question);
+        }
+        else{
+            //update
+            question.setGmt_modified(System.currentTimeMillis());
+            quesstionMapper.update(question);
+        }
+    }
     //当一个请求需要组装user和question的时候，需要一个中间层去做这件事
 }
