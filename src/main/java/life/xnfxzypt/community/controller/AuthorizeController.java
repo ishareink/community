@@ -50,8 +50,8 @@ public class AuthorizeController {//认证的controller
             String token = UUID.randomUUID().toString();
             user.setToken(token);
             user.setName(giteeUser.getName());
-            user.setAccount_id(String.valueOf(giteeUser.getId()));
-            user.setAvatar_url(giteeUser.getAvatar_url());
+            user.setAccountId(String.valueOf(giteeUser.getId()));
+            user.setAvatarUrl(giteeUser.getAvatar_url());
             userService.createOrUpdate(user);
             //登陆成功，写cookies和session
             response.addCookie(new Cookie("token",token));

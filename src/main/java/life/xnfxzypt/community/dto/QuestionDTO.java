@@ -3,17 +3,25 @@ package life.xnfxzypt.community.dto;
 import life.xnfxzypt.community.model.User;
 
 public class QuestionDTO {
-    private Integer id;
+    private Long id;
     private String title;
     private String description;
     private String tag;
-    private Long gmt_create;
-    private Long gmt_modified;
-    private Integer creator;
-    private Integer view_count;
-    private Integer comment_count;
-    private Integer like_count;
+    private Long gmtCreate;
+    private Long gmtModified;
+    private Long creator;
+    private Integer viewCount;
+    private Integer commentCount;
+    private Integer likeCount;
     private User user;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public User getUser() {
         return user;
@@ -21,14 +29,6 @@ public class QuestionDTO {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -55,51 +55,51 @@ public class QuestionDTO {
         this.tag = tag;
     }
 
-    public Long getGmt_create() {
-        return gmt_create;
+    public Long getGmtCreate() {
+        return gmtCreate;
     }
 
-    public void setGmt_create(Long gmt_create) {
-        this.gmt_create = gmt_create;
+    public void setGmtCreate(Long gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
-    public Long getGmt_modified() {
-        return gmt_modified;
+    public Long getGmtModified() {
+        return gmtModified;
     }
 
-    public void setGmt_modified(Long gmt_modified) {
-        this.gmt_modified = gmt_modified;
+    public void setGmtModified(Long gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
-    public Integer getCreator() {
+    public Long getCreator() {
         return creator;
     }
 
-    public void setCreator(Integer creator) {
+    public void setCreator(Long creator) {
         this.creator = creator;
     }
 
-    public Integer getView_count() {
-        return view_count;
+    public Integer getViewCount() {
+        return viewCount;
     }
 
-    public void setView_count(Integer view_count) {
-        this.view_count = view_count;
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
     }
 
-    public Integer getComment_count() {
-        return comment_count;
+    public Integer getCommentCount() {
+        return commentCount;
     }
 
-    public void setComment_count(Integer comment_count) {
-        this.comment_count = comment_count;
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
     }
 
-    public Integer getLike_count() {
-        return like_count;
+    public Integer getLikeCount() {
+        return likeCount;
     }
 
-    public void setLike_count(Integer like_count) {
-        this.like_count = like_count;
+    public void setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
     }
 }

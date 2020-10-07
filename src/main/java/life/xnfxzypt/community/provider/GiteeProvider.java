@@ -23,7 +23,10 @@ public class GiteeProvider {
                 .build();
         try {
             Response response = client.newCall(request).execute();
-            String string = response.body().string();
+            String string = null;
+            if (response.body() != null) {
+                string = response.body().string();
+            }
             String accessToken = JSON.parseObject(string).getString("access_token");
             System.out.println("token——>"+accessToken);
             return accessToken;

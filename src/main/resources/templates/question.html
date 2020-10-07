@@ -18,8 +18,8 @@
             <h4><span th:text="${question.title}"></span></h4>
             <span class="text-desc">
                     作者：<span th:text="${question.user.name}"></span> |
-                    发布时间：<span th:text="${#dates.format(question.gmt_create,'yyyy-MM-dd HH:mm')}"></span> |
-                    浏览数：<span th:text="${question.view_count}"></span>
+                    发布时间：<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span> |
+                    浏览数：<span th:text="${question.viewCount}"></span>
             </span>
             <hr>
             <!--内容-->
@@ -48,7 +48,7 @@
                     <div class="media-left">
                         <a href="#">
                             <img class="media-object img-circle"
-                                 th:src="${question.user.avatar_url}">
+                                 th:src="${question.user.avatarUrl}">
                         </a>
                     </div>
                     <div class="media-body">
