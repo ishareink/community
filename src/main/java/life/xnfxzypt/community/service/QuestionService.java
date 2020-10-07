@@ -2,10 +2,12 @@ package life.xnfxzypt.community.service;
 
 import life.xnfxzypt.community.dto.PaginationDTO;
 import life.xnfxzypt.community.dto.QuestionDTO;
-import life.xnfxzypt.community.mapper.QuesstionMapper;
+import life.xnfxzypt.community.mapper.QuestionMapper;
 import life.xnfxzypt.community.mapper.UserMapper;
 import life.xnfxzypt.community.model.Question;
+import life.xnfxzypt.community.model.QuestionExample;
 import life.xnfxzypt.community.model.User;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,7 @@ import java.util.List;
 public class QuestionService {
 
     @Autowired
-    private QuesstionMapper quesstionMapper;
+    private QuestionMapper questionMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -26,7 +28,7 @@ public class QuestionService {
 
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalPage;
-        Integer totalCount = quesstionMapper.count();
+        Integer totalCount = questionMapper.countByExample(new QuestionExample());
         if (totalCount % size == 0) {
             totalPage = totalCount / size;
         } else {
@@ -43,12 +45,19 @@ public class QuestionService {
 
         paginationDTO.setPagiation(totalPage, page);
         //size * (page - 1)
+
         Integer offset = size * (page - 1);
-        List<Question> questions = quesstionMapper.list(offset, size);
+//        if(offset<=0){
+//            offset=0;size=0;
+//        }
+
+
+        //分页
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
         List<QuestionDTO> questionDTOList = new ArrayList<>();
 
         for (Question question : questions) {
-            User user = userMapper.findById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);//内置的工具，快速得把对象1属性拷贝到2
             questionDTO.setUser(user);
@@ -59,10 +68,13 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public PaginationDTO list(Integer user_id, Integer page, Integer size) {
+    public PaginationDTO list(Long userId, Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalPage;
-        Integer totalCount = quesstionMapper.countByUserId(user_id);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria()
+                .andCreatorEqualTo(userId);
+        Integer totalCount = questionMapper.countByExample(questionExample);
         if (totalCount % size == 0) {
             totalPage = totalCount / size;
         } else {
@@ -79,12 +91,21 @@ public class QuestionService {
 
         paginationDTO.setPagiation(totalPage, page);
         //size * (page - 1)
+
         Integer offset = size * (page - 1);
-        List<Question> questions = quesstionMapper.listByUserId(user_id, offset, size);
+//        if(offset<=0){
+//            offset=0;size=0;
+//        }
+
+
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andCreatorEqualTo(userId);
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
         List<QuestionDTO> questionDTOList = new ArrayList<>();
 
         for (Question question : questions) {
-            User user = userMapper.findById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);//内置的工具，快速得把对象1属性拷贝到2
             questionDTO.setUser(user);
@@ -95,26 +116,33 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public QuestionDTO getById(Integer id) {
-        Question question= quesstionMapper.getById(id);
+    public QuestionDTO getById(Long id) {
+        Question question = questionMapper.selectByPrimaryKey(id);
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);//内置的工具，快速得把对象1属性拷贝到2
-        User user = userMapper.findById(question.getCreator());
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
         questionDTO.setUser(user);
         return questionDTO;
     }
 
     public void createOrUpdate(Question question) {
         //not exit
-        if(question==null){
-            question.setGmt_create(System.currentTimeMillis());
-            question.setGmt_modified(question.getGmt_create());
-            quesstionMapper.create(question);
-        }
-        else{
+        if (question.getId() == null) {
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.insert(question);
+        } else {
             //update
-            question.setGmt_modified(System.currentTimeMillis());
-            quesstionMapper.update(question);
+            question.setGmtModified(System.currentTimeMillis());
+            Question updateQuestion = new Question();
+            updateQuestion.setGmtModified(System.currentTimeMillis());
+            updateQuestion.setTitle(question.getTitle());
+            updateQuestion.setDescription(question.getDescription());
+            updateQuestion.setTag(question.getTag());
+            QuestionExample example = new QuestionExample();
+            example.createCriteria()
+                    .andCreatorEqualTo(question.getId());
+            questionMapper.updateByExampleSelective(updateQuestion, example);
         }
     }
     //当一个请求需要组装user和question的时候，需要一个中间层去做这件事
