@@ -4,6 +4,7 @@ import life.xnfxzypt.community.dto.PaginationDTO;
 import life.xnfxzypt.community.dto.QuestionDTO;
 import life.xnfxzypt.community.exception.CustomizeErrorCode;
 import life.xnfxzypt.community.exception.CustomizeException;
+import life.xnfxzypt.community.mapper.QuestionExtMapper;
 import life.xnfxzypt.community.mapper.QuestionMapper;
 import life.xnfxzypt.community.mapper.UserMapper;
 import life.xnfxzypt.community.model.Question;
@@ -22,6 +23,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -49,10 +53,6 @@ public class QuestionService {
         //size * (page - 1)
 
         Integer offset = size * (page - 1);
-//        if(offset<=0){
-//            offset=0;size=0;
-//        }
-
 
         //分页
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
@@ -95,10 +95,6 @@ public class QuestionService {
         //size * (page - 1)
 
         Integer offset = size * (page - 1);
-//        if(offset<=0){
-//            offset=0;size=0;
-//        }
-
 
         QuestionExample example = new QuestionExample();
         example.createCriteria()
@@ -153,5 +149,11 @@ public class QuestionService {
             }
         }
     }
-    //当一个请求需要组装user和question的时候，需要一个中间层去做这件事
+
+    public void incView(Long id) {
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(1);
+        questionExtMapper.incView(question);
+    }
 }
