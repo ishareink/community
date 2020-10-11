@@ -2,6 +2,8 @@ package life.xnfxzypt.community.service;
 
 import life.xnfxzypt.community.dto.PaginationDTO;
 import life.xnfxzypt.community.dto.QuestionDTO;
+import life.xnfxzypt.community.exception.CustomizeErrorCode;
+import life.xnfxzypt.community.exception.CustomizeException;
 import life.xnfxzypt.community.mapper.QuestionMapper;
 import life.xnfxzypt.community.mapper.UserMapper;
 import life.xnfxzypt.community.model.Question;
@@ -118,6 +120,9 @@ public class QuestionService {
 
     public QuestionDTO getById(Long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null) {
+            throw new CustomizeException(CustomizeErrorCode.SYS_ERROR);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);//内置的工具，快速得把对象1属性拷贝到2
         User user = userMapper.selectByPrimaryKey(question.getCreator());
@@ -142,7 +147,10 @@ public class QuestionService {
             QuestionExample example = new QuestionExample();
             example.createCriteria()
                     .andCreatorEqualTo(question.getId());
-            questionMapper.updateByExampleSelective(updateQuestion, example);
+            int updated = questionMapper.updateByExampleSelective(updateQuestion, example);
+            if(updated!=1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
     }
     //当一个请求需要组装user和question的时候，需要一个中间层去做这件事
