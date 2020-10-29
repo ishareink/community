@@ -2,6 +2,7 @@ package life.xnfxzypt.community.controller;
 
 import life.xnfxzypt.community.dto.CommentDTO;
 import life.xnfxzypt.community.dto.ResultDTO;
+import life.xnfxzypt.community.exception.CustomizeErrorCode;
 import life.xnfxzypt.community.model.Comment;
 import life.xnfxzypt.community.model.User;
 import life.xnfxzypt.community.service.CommentService;
@@ -25,9 +26,9 @@ public class CommentController {
     public Object post(@RequestBody CommentDTO commentDTO,
                        HttpServletRequest request){
         User user=(User)request.getSession().getAttribute("user");
-//        if(user==null){
-//            return ResultDTO.errorOf(CustomizeErrorCode.NO_LOGIN);
-//        }
+        if(user==null){
+            return ResultDTO.errorOf(CustomizeErrorCode.NO_LOGIN);
+        }
         Comment comment = new Comment();
         comment.setParentId(commentDTO.getParentId());
         comment.setContent(commentDTO.getContent());

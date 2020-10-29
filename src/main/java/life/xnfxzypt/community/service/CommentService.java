@@ -10,6 +10,7 @@ import life.xnfxzypt.community.model.Comment;
 import life.xnfxzypt.community.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -23,6 +24,7 @@ public class CommentService {
     @Autowired
     private QuestionExtMapper questionExtMapper;
 
+    @Transactional
     public void insert(Comment comment) {
         //校验父id
         if (comment.getParentId() == null || comment.getParentId() == 0){
