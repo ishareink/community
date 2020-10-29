@@ -131,6 +131,9 @@ public class QuestionService {
         if (question.getId() == null) {
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
+            question.setViewCount(0);
+            question.setLikeCount(0);
+            question.setCommentCount(0);
             questionMapper.insert(question);
         } else {
             //update

@@ -19,8 +19,7 @@ public class GiteeProvider {
                 .url("https://gitee.com/oauth/token")
                 .post(body)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
+        try (Response response = client.newCall(request).execute()){
             String string = null;
             if (response.body() != null) {
                 string = response.body().string();

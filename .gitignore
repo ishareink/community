@@ -17,6 +17,8 @@ logs/
 *.iws
 *.iml
 *.ipr
+*.pom
+*.properties
 
 
 ### NetBeans ###

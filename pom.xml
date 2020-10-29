@@ -92,7 +92,7 @@
                 <configuration>
                     <url>jdbc:mysql://localhost:3306/community?allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=UTC</url>
                     <user>root</user>
-                    <password>BxTm-130</password>
+                    <password></password>
                 </configuration>
                 <dependencies>
                     <dependency>
