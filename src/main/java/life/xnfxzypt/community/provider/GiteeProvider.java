@@ -37,9 +37,10 @@ public class GiteeProvider {
                 .url("https://gitee.com/api/v5/user?")
                 .header("Authorization","token "+accessToken)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            String string =response.body().string();
+        try (Response response = client.newCall(request).execute()){
+            String string=null;
+            if (response.body() != null)
+            string=response.body().string();
             GiteeUser giteeUser = JSON.parseObject(string, GiteeUser.class);
             return giteeUser;
 
