@@ -2,6 +2,7 @@ package life.xnfxzypt.community.controller;
 
 import life.xnfxzypt.community.dto.CommentDTO;
 import life.xnfxzypt.community.dto.QuestionDTO;
+import life.xnfxzypt.community.enums.CommentTypeEnum;
 import life.xnfxzypt.community.service.CommentService;
 import life.xnfxzypt.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class QuestionController {
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name="id") Long id, Model model){
         QuestionDTO questionDTO=questionService.getById(id);
-        List<CommentDTO> comments=commentService.listByQuestionId(id);
+        List<CommentDTO> comments=commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
 
         //增加阅读数
         questionService.incView(id);

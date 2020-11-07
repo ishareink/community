@@ -17,8 +17,8 @@ logs/
 *.iws
 *.iml
 *.ipr
-*.xml
-*.properties
+
+
 
 
 ### NetBeans ###
@@ -34,6 +34,7 @@ logs/
 
 ### file ###
 application.properties
-
+generatorConfig.xml
+pom.xml
 ### flyway ###
 src/main/resources/db/
