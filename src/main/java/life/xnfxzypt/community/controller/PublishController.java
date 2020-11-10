@@ -1,7 +1,7 @@
 package life.xnfxzypt.community.controller;
 
+import life.xnfxzypt.community.cache.TagCache;
 import life.xnfxzypt.community.dto.QuestionDTO;
-import life.xnfxzypt.community.mapper.QuestionMapper;
 import life.xnfxzypt.community.model.Question;
 import life.xnfxzypt.community.model.User;
 import life.xnfxzypt.community.service.QuestionService;
@@ -17,12 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class PublishController {
-    @Autowired
-    private QuestionMapper questionMapper;
 
     @Autowired
     private QuestionService questionService;
 
+    //创建的时候
     @GetMapping("/publish/{id}")
     public String edit(@PathVariable(name = "id") Long id,
                        Model model) {
@@ -31,14 +30,18 @@ public class PublishController {
         model.addAttribute("description", question.getDescription());
         model.addAttribute("tag", question.getTag());
         model.addAttribute("id", question.getId());
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
+    //第一次的时候
     @GetMapping("/publish")
-    public String publish() {
+    public String publish(Model model) {
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
+    //修改的时候
     @PostMapping("/publish")
     public String doPublish(
             @RequestParam(value = "title", required = false) String title,
@@ -51,6 +54,7 @@ public class PublishController {
         model.addAttribute("title", title);
         model.addAttribute("description", description);
         model.addAttribute("tag", tag);
+        model.addAttribute("tags", TagCache.get());
 
         if (title == null || title == "") {
             model.addAttribute("error", "标题不能为空");
@@ -64,6 +68,11 @@ public class PublishController {
             model.addAttribute("error", "标签不能为空");
             return "publish";
         }
+//        String invalid = TagCache.filterInvalid(tag);
+//        if (StringUtils.isNotBlank(invalid)) {
+//            model.addAttribute("error", "输入非法标签:" + invalid);
+//            return "publish";
+//        }
 
         User user = (User) request.getSession().getAttribute("user");
         /*  如果想在服务端api接口级别 去传递到页面去的话，需要把需要传递的东西写在model里面传递过去*/
