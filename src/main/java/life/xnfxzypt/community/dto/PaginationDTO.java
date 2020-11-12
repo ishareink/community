@@ -3,15 +3,22 @@ package life.xnfxzypt.community.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaginationDTO {
-    private List<QuestionDTO> questions;
+public class PaginationDTO<T> {
+    private List<T> data;
+    private List<Integer> pages = new ArrayList<>();
     private boolean showPrevious;
     private boolean showFirstPage;
     private boolean showNext;
     private boolean showEndPage;
     private Integer page;
     private Integer totalPage;
+    public List<T> getData() {
+        return data;
+    }
 
+    public void setData(List<T> data) {
+        this.data = data;
+    }
     public Integer getTotalPage() {
         return totalPage;
     }
@@ -20,7 +27,7 @@ public class PaginationDTO {
         this.totalPage = totalPage;
     }
 
-    private List<Integer> pages = new ArrayList<>();
+
 
     public boolean isShowPrevious() {
         return showPrevious;
@@ -68,14 +75,6 @@ public class PaginationDTO {
 
     public void setPages(List<Integer> pages) {
         this.pages = pages;
-    }
-
-    public List<QuestionDTO> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(List<QuestionDTO> questions) {
-        this.questions = questions;
     }
 
     public void setPagiation(Integer totalPage, Integer page) {

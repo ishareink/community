@@ -17,6 +17,7 @@ public class GiteeProvider {
         RequestBody body = RequestBody.create(mediaType,JSON.toJSONString(accessTokenDTO));
         Request request = new Request.Builder()
                 .url("https://gitee.com/oauth/token")
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()){
