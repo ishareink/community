@@ -35,10 +35,9 @@ public class SessionInterceptor implements HandlerInterceptor {
                     List<User> users=userMapper.selectByExample(userExample);
 
                     if (users.size() != 0) {
-                        HttpSession session = request.getSession();
-                        session.setAttribute("user", users.get(0));
+                        request.getSession().setAttribute("user", users.get(0));
                         Long unreadCount = notificationService.unreadCount(users.get(0).getId());
-                        session.setAttribute("unreadCount", unreadCount);
+                        request.getSession().setAttribute("unreadCount", unreadCount);
                     }
                     break;
                 }

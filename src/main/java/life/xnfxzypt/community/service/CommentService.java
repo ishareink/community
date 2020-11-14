@@ -61,22 +61,23 @@ public class CommentService {
             if (question == null) {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
-            commentMapper.insert(comment);
+            commentMapper.insertSelective(comment);
             //增加评论数
             Comment parentComment = new Comment();
             parentComment.setId(comment.getParentId());
-            comment.setCommentCount(1);
-            commentExtMapper.incCommentCount(comment);
+            parentComment.setCommentCount(1);
+            commentExtMapper.incCommentCount(parentComment);
             // 创建通知
             createNotify(comment, dbComment.getCommentator(), commentator.getName(), question.getTitle(), NotificationTypeEnum.REPLY_COMMENT, question.getId());
         } else {
-            // 回复问题
+            // 二级回复
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId());
             if (question == null) {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
 
-            commentMapper.insert(comment);
+            comment.setCommentCount(0);
+            commentMapper.insertSelective(comment);
             question.setCommentCount(1);
             questionExtMapper.incCommentCount(question);
             // 创建通知
@@ -85,9 +86,9 @@ public class CommentService {
     }
 
     private void createNotify(Comment comment, Long receiver, String notifierName, String outerTitle, NotificationTypeEnum notificationType, Long outerId) {
-//        if (receiver == comment.getCommentator()) {
-//            return;
-//        }
+        if (receiver == comment.getCommentator()) {
+            return;
+        }
         Notification notification = new Notification();
         notification.setGmtCreate(System.currentTimeMillis());
         notification.setType(notificationType.getType());//通知类型
