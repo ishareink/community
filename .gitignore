@@ -28,6 +28,7 @@ logs/
 /nbdist/
 /.nb-gradle/
 /build/
+
 src/main/java/life/xnfxzypt/community/config/
 
 ### VS Code ###

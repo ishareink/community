@@ -5,6 +5,7 @@ import life.xnfxzypt.community.dto.GiteeUser;
 import life.xnfxzypt.community.model.User;
 import life.xnfxzypt.community.provider.GiteeProvider;
 import life.xnfxzypt.community.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -16,7 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
+
+
 @Controller
+@Slf4j
 public class AuthorizeController {//认证的controller
     @Autowired
     private GiteeProvider giteeProvider;
@@ -59,6 +63,7 @@ public class AuthorizeController {//认证的controller
             return "redirect:/";
         }else{
             //登陆失败,重新登录
+            log.error("callback get giitee error,{}",giteeUser);
             return "redirect:/";
         }
     }

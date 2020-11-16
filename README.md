@@ -1,27 +1,5 @@
 # iShare社区
 
-## 快速运行
-1. 安装必备工具  
-JDK，Maven
-2. 克隆代码到本地  
-3. 运行命令创建数据库脚本
-```sh
-mvn flyway:migrate
-```
-4. 运行打包命令
-```sh
-mvn package
-```
-5. 运行项目  
-```sh
-java -jar target/community-0.0.1-SNAPSHOT.jar
-```
-6. 访问项目
-```
-http://localhost:8887
-```
-
-
 ## 资料
 [Spring 文档](https://spring.io/guides)    
 [Spring Web](https://spring.io/guides/gs/serving-web-content/)   
@@ -34,8 +12,7 @@ http://localhost:8887
 [Spring Dev Tool](https://docs.spring.io/spring-boot/docs/2.0.0.RC1/reference/htmlsingle/#using-boot-devtools)  
 [Spring MVC](https://docs.spring.io/spring/docs/5.0.3.RELEASE/spring-framework-reference/web.html#mvc-handlermapping-interceptor)  
 [Markdown 插件](http://editor.md.ipandao.com/)   
-[UFfile SDK](https://github.com/ucloud/ufile-sdk-java)  
-[Count(*) VS Count(1)](https://mp.weixin.qq.com/s/Rwpke4BHu7Fz7KOpE2d3Lw)  
+[QiNiuCloud SDK](https://developer.qiniu.com/kodo/sdk/1239/java)  
 
 ## 工具
 [Git](https://git-scm.com/download)   
@@ -48,17 +25,7 @@ http://localhost:8887
 [Postman](https://chrome.google.com/webstore/detail/coohjcphdfgbiolnekdpbcijmhambjff)
 
 ## 脚本
-```sql
-CREATE TABLE USER
-(
-    ID int AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    ACCOUNT_ID VARCHAR(100),
-    NAME VARCHAR(50),
-    TOKEN VARCHAR(36),
-    GMT_CREATE BIGINT,
-    GMT_MODIFIED BIGINT
-);
-```
+
 ```bash
 mvn flyway:migrate
 mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
