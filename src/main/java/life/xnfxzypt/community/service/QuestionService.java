@@ -2,6 +2,8 @@ package life.xnfxzypt.community.service;
 
 import life.xnfxzypt.community.dto.PaginationDTO;
 import life.xnfxzypt.community.dto.QuestionDTO;
+import life.xnfxzypt.community.dto.QuestionQueryDTO;
+import life.xnfxzypt.community.enums.SortEnum;
 import life.xnfxzypt.community.exception.CustomizeErrorCode;
 import life.xnfxzypt.community.exception.CustomizeException;
 import life.xnfxzypt.community.mapper.QuestionExtMapper;
@@ -33,11 +35,40 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    public PaginationDTO list(Integer page, Integer size) {
+    public PaginationDTO list(String search,String tag, String sort,Integer page, Integer size) {
         //首页分页
+        if (StringUtils.isNotBlank(search)) {
+            String[] tags = StringUtils.split(search, " ");
+            search = Arrays
+                    .stream(tags)
+                    .filter(StringUtils::isNotBlank)
+                    .map(t -> t.replace("+", "").replace("*", "").replace("?", ""))
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.joining("|"));
+        }
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalPage;
-        Integer totalCount = (int)questionMapper.countByExample(new QuestionExample());
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+        if (StringUtils.isNotBlank(tag)) {
+            tag = tag.replace("+", "").replace("*", "").replace("?", "");
+            questionQueryDTO.setTag(tag);
+        }
+
+        for (SortEnum sortEnum : SortEnum.values()) {
+            if (sortEnum.name().toLowerCase().equals(sort)) {
+                questionQueryDTO.setSort(sort);
+
+                if (sortEnum == SortEnum.HOT7) {
+                    questionQueryDTO.setTime(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 7);
+                }
+                if (sortEnum == SortEnum.HOT30) {
+                    questionQueryDTO.setTime(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 30);
+                }
+                break;
+            }
+        }
+        Integer totalCount = questionExtMapper.countBySearch(new QuestionQueryDTO());
         if (totalCount % size == 0) {
             totalPage = totalCount / size;
         } else {
@@ -55,23 +86,23 @@ public class QuestionService {
         paginationDTO.setPagiation(totalPage, page);
         //size * (page - 1)
 
-        Integer offset = size * (page - 1);
+        Integer offset = page < 1 ? 0 : size * (page - 1);
 
         //分页
-        QuestionExample questionExample = new QuestionExample();
-        questionExample.setOrderByClause("gmt_create desc");
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
+        questionQueryDTO.setSize(size);
+        questionQueryDTO.setPage(offset);
+        List<Question> questions = questionExtMapper.selectBySearch(questionQueryDTO);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
 
         for (Question question : questions) {
             User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(question, questionDTO);//内置的工具，快速得把对象1属性拷贝到2
+            BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
-        paginationDTO.setData(questionDTOList);
 
+        paginationDTO.setData(questionDTOList);
         return paginationDTO;
     }
 
@@ -98,7 +129,7 @@ public class QuestionService {
 
         paginationDTO.setPagiation(totalPage, page);
         //size * (page - 1)
-        Integer offset = size * (page - 1);
+        Integer offset = page < 1 ? 0 : size * (page - 1);
 
         QuestionExample example = new QuestionExample();
         example.createCriteria()
@@ -141,7 +172,15 @@ public class QuestionService {
             questionMapper.insert(question);
         } else {
             //update
-            question.setGmtModified(System.currentTimeMillis());
+            Question dbQuestion = questionMapper.selectByPrimaryKey(question.getId());
+            if (dbQuestion == null) {
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
+
+            if (dbQuestion.getCreator().longValue() != question.getCreator().longValue()) {
+                throw new CustomizeException(CustomizeErrorCode.INVALID_OPERATION);
+            }
+
             Question updateQuestion = new Question();
             updateQuestion.setGmtModified(System.currentTimeMillis());
             updateQuestion.setTitle(question.getTitle());
@@ -149,9 +188,9 @@ public class QuestionService {
             updateQuestion.setTag(question.getTag());
             QuestionExample example = new QuestionExample();
             example.createCriteria()
-                    .andCreatorEqualTo(question.getId());
+                    .andIdEqualTo(question.getId());
             int updated = questionMapper.updateByExampleSelective(updateQuestion, example);
-            if(updated!=1){
+            if (updated != 1) {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
         }

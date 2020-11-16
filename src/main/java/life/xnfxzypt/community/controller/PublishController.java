@@ -5,6 +5,7 @@ import life.xnfxzypt.community.dto.QuestionDTO;
 import life.xnfxzypt.community.model.Question;
 import life.xnfxzypt.community.model.User;
 import life.xnfxzypt.community.service.QuestionService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,8 +50,7 @@ public class PublishController {
             @RequestParam(value = "tag", required = false) String tag,
             @RequestParam(value = "id", required = false) Long id,
             HttpServletRequest request,
-            Model model
-    ) {
+            Model model) {
         model.addAttribute("title", title);
         model.addAttribute("description", description);
         model.addAttribute("tag", tag);
@@ -68,11 +68,11 @@ public class PublishController {
             model.addAttribute("error", "标签不能为空");
             return "publish";
         }
-//        String invalid = TagCache.filterInvalid(tag);
-//        if (StringUtils.isNotBlank(invalid)) {
-//            model.addAttribute("error", "输入非法标签:" + invalid);
-//            return "publish";
-//        }
+        String invalid = TagCache.filterInvalid(tag);
+        if (StringUtils.isNotBlank(invalid)) {
+            model.addAttribute("error", "输入非法标签:" + invalid);
+            return "publish";
+        }
 
         User user = (User) request.getSession().getAttribute("user");
         /*  如果想在服务端api接口级别 去传递到页面去的话，需要把需要传递的东西写在model里面传递过去*/
