@@ -5,6 +5,7 @@ import life.xnfxzypt.community.dto.QuestionDTO;
 import life.xnfxzypt.community.model.Question;
 import life.xnfxzypt.community.model.User;
 import life.xnfxzypt.community.service.QuestionService;
+import life.xnfxzypt.community.util.SensitiveFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,27 +23,31 @@ public class PublishController {
     @Autowired
     private QuestionService questionService;
 
-    //创建的时候
+    @Autowired
+    private SensitiveFilter sensitiveFilter;
+
+    //点击编辑，根据id重新获取发布
     @GetMapping("/publish/{id}")
     public String edit(@PathVariable(name = "id") Long id,
                        Model model) {
         QuestionDTO question = questionService.getById(id);
         model.addAttribute("title", question.getTitle());
         model.addAttribute("description", question.getDescription());
+
         model.addAttribute("tag", question.getTag());
         model.addAttribute("id", question.getId());
         model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
-    //第一次的时候
+    //点击发布入口，将标签缓存先加载好
     @GetMapping("/publish")
     public String publish(Model model) {
         model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
-    //修改的时候
+    //将post请求的表单接收处理
     @PostMapping("/publish")
     public String doPublish(
             @RequestParam(value = "title", required = false) String title,
@@ -83,6 +88,7 @@ public class PublishController {
 
         Question question = new Question();
         question.setTitle(title);
+        description=sensitiveFilter.filter(description);
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(user.getId());
