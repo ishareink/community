@@ -1,6 +1,5 @@
 package life.xnfxzypt.community.controller;
 
-import life.xnfxzypt.community.config.QiniuConfig;
 import life.xnfxzypt.community.dto.FileDTO;
 import life.xnfxzypt.community.provider.QiniuCloudProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 public class FileController {
     @Autowired
     private QiniuCloudProvider qiniuCloudProvider;
-    @Autowired
-    private QiniuConfig qiNiuConfig;
+
 
 
     @RequestMapping("/file/upload")
@@ -32,7 +30,6 @@ public class FileController {
             return result;
         }
         try {
-
             String url = qiniuCloudProvider.upload(file);
             result.setSuccess(1);
             result.setMessage("文件上传成功");
