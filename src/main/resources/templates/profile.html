@@ -52,6 +52,24 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:if="${section == 'like'}">
+                <div>
+                    <h4>获取的总赞数</h4>
+                    <br>
+                    <span th:text="${likeCount}"></span>
+                </div>
+                <div class="media" th:each="notification : ${pagination.data}">
+                    <div class="media-body">
+                        <p class="media-heading">
+                            <span th:text="${notification.notifierName +' ' + notification.typeName + ' '}"></span>
+                            <a th:href="@{'/notification/'+ ${notification.id}}"
+                               th:text="${notification.outerTitle}">
+                            </a>
+                            <span class="label label-danger" th:if="${notification.status == 0}">未读</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <nav aria-label="Page navigation">
                     <ul class="pagination">
@@ -94,6 +112,10 @@
                    th:class="${section == 'replies'}? 'active list-group-item' : 'list-group-item'">
                     最新回复
                     <span class="badge" th:text="${session.unreadCount}"></span>
+                </a>
+                <a href="/profile/like"
+                   th:class="${section == 'like'}? 'active list-group-item' : 'list-group-item'">
+                    获得的赞
                 </a>
             </div>
         </div>

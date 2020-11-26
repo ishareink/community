@@ -63,11 +63,12 @@
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             </div>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <!--回复-->
+            <!--一级回复-->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h4>
                     <span th:text="${question.commentCount}"></span> 个回复
                 </h4>
+                <span href="javascript:;" th:onclick="|like(this,1,${question.id},${question.creator});|"></span>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comments" th:each="comment : ${comments}">
                     <div class="media">
@@ -83,11 +84,10 @@
                             </h5>
                             <div th:text="${comment.content}"></div>
                             <div class="menu">
-                                <span class="glyphicon glyphicon-thumbs-up icon">
-								    <span href="javascript:;" th:onclick="|like(this,1,${question.id});|">
-									<b th:text="${likeStatus==1?'已赞':'赞'}">赞</b> <i th:text="${likeCount}">11</i>
+
+								    <span class="glyphicon glyphicon-thumbs-up icon" href="javascript:;" th:onclick="|like(this,2,${comment.id},${comment.getCommentator()});|">
+									<b  th:text="${likeStatus==1?'已赞':'赞'}">赞</b> <i th:text="${likeCount}">11</i>
 								    </span>
-                                </span>
 
                                 <span th:data-id="${comment.id}"
                                       onclick="collapseComments(this)" class="comment-icon">
@@ -97,7 +97,7 @@
                                 <span class="pull-right"
                                       th:text="${#dates.format(comment.gmtCreate,'yyyy-MM-dd')}"></span>
                             </div>
-                            <!--二级评论-->
+                            <!--二级回复-->
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse sub-comments"
                                  th:id="${'comment-'+comment.id}">
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

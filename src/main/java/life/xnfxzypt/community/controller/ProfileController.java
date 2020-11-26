@@ -2,6 +2,7 @@ package life.xnfxzypt.community.controller;
 
 import life.xnfxzypt.community.dto.PaginationDTO;
 import life.xnfxzypt.community.model.User;
+import life.xnfxzypt.community.service.LikeService;
 import life.xnfxzypt.community.service.NotificationService;
 import life.xnfxzypt.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class ProfileController {
     private QuestionService questionService;
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private LikeService likeService;
 
     @GetMapping("/profile/{action}")
     public String profile(HttpServletRequest request,
@@ -44,6 +47,13 @@ public class ProfileController {
             model.addAttribute("section", "replies");
             model.addAttribute("pagination", paginationDTO);
             model.addAttribute("sectionName", "最新回复");
+        }else if("like".equals(action)){
+            PaginationDTO paginationDTO = notificationService.list(user.getId(), page, size);
+            model.addAttribute("section", "like");
+            int  likeCount=likeService.findUserLikeCount(user.getId());
+            model.addAttribute("pagination", paginationDTO);
+            model.addAttribute("likeCount",likeCount);
+            model.addAttribute("sectionName", "获得的赞");
         }
 
         return "profile";
