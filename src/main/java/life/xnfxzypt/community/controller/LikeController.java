@@ -32,7 +32,7 @@ public class LikeController  {
 
     @RequestMapping(path = "/like",method = RequestMethod.POST)
     @ResponseBody
-    public String like(int entityType, int entityId,Long entityUserId,
+    public String like(int entityType, Long entityId,Long entityUserId,
                        HttpServletRequest request) {
 
         User user = (User) request.getSession().getAttribute("user");

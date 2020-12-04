@@ -30,7 +30,7 @@ public class LikeService {
      * @return: void
      * @Date 22/11/2020
      **/
-    public void like(Long userId, int entityType, int entityId,Long entityUserId) {
+    public void like(Long userId, int entityType, Long entityId,Long entityUserId) {
         redisTemplate.execute(new SessionCallback() {
             @Override
             public Object execute(RedisOperations operations) throws DataAccessException {
@@ -59,7 +59,7 @@ public class LikeService {
      * @return: long
      * @Date 22/11/2020
      **/
-    public long findEntityLikeCount(int entityType, int entityId) {
+    public long findEntityLikeCount(int entityType, Long entityId) {
         String entityLikeKey = RedisKeyUtil.getEntityLikeKey(entityType, entityId);
         return redisTemplate.opsForSet().size(entityLikeKey);
     }
@@ -72,7 +72,7 @@ public class LikeService {
      * @return: int
      * @Date 22/11/2020
      **/
-    public int findEntityLikeStatus(int entityType, int entityId, Long userId) {
+    public int findEntityLikeStatus(int entityType, Long entityId, Long userId) {
         String entityLikeKey = RedisKeyUtil.getEntityLikeKey(entityType, entityId);
         //此处返回int，是为了进行扩展。比如扩展踩，为止2.等等情况
         return redisTemplate.opsForSet().isMember(entityLikeKey, userId) ? 1 : 0;

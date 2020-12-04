@@ -13,6 +13,7 @@ public class QuestionDTO {
     private Integer viewCount;
     private Integer commentCount;
     private Integer likeCount;
+    private int likeStatus;
     private User user;
 
     public Long getId() {
@@ -101,5 +102,13 @@ public class QuestionDTO {
 
     public void setLikeCount(Integer likeCount) {
         this.likeCount = likeCount;
+    }
+
+    public int getLikeStatus() {
+        return likeStatus;
+    }
+
+    public void setLikeStatus(int likeStatus) {
+        this.likeStatus = likeStatus;
     }
 }

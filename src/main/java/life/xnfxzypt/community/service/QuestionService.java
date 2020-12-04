@@ -35,6 +35,9 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private LikeService likeService;
+
     public PaginationDTO list(String search,String tag, String sort,Integer page, Integer size) {
         //首页分页
         if (StringUtils.isNotBlank(search)) {
@@ -148,16 +151,33 @@ public class QuestionService {
 
         return paginationDTO;
     }
-
     public QuestionDTO getById(Long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
         if (question == null) {
             throw new CustomizeException(CustomizeErrorCode.SYS_ERROR);
         }
+
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);//内置的工具，快速得把对象1属性拷贝到2
         User user = userMapper.selectByPrimaryKey(question.getCreator());
         questionDTO.setUser(user);
+        return questionDTO;
+    }
+    public QuestionDTO getById(Long id,Long curUserId) {
+        Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null) {
+            throw new CustomizeException(CustomizeErrorCode.SYS_ERROR);
+        }
+
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question, questionDTO);//内置的工具，快速得把对象1属性拷贝到2
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
+        questionDTO.setUser(user);
+        int likeCount=(int)likeService.findEntityLikeCount(1,question.getId());//帖子点赞 实体id
+        questionDTO.setLikeCount(likeCount);
+        //当前用户对这个实体是否已点赞
+        int likeStatus=(curUserId==-1)?0:likeService.findEntityLikeStatus(1,question.getId(),curUserId);
+        questionDTO.setLikeStatus(likeStatus);
         return questionDTO;
     }
 
@@ -226,4 +246,6 @@ public class QuestionService {
         }).collect(Collectors.toList());
         return questionDTOS;
     }
+
+
 }

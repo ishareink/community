@@ -40,6 +40,9 @@ public class CommentService {
     @Autowired
     private NotificationMapper notificationMapper;
 
+    @Autowired
+    private LikeService likeService;
+
     @Transactional
     public void insert(Comment comment, User commentator) {
         //校验父id
@@ -99,6 +102,42 @@ public class CommentService {
         notification.setNotifierName(notifierName);//通知者名字
         notification.setOuterTitle(outerTitle);
         notificationMapper.insert(notification);
+    }
+
+    public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type,Long curUserId) {
+        CommentExample commentExample = new CommentExample();
+        commentExample.createCriteria()
+                .andParentIdEqualTo(id)
+                .andTypeEqualTo(type.getType());
+        commentExample.setOrderByClause("gmt_create desc");
+        List<Comment> comments = commentMapper.selectByExample(commentExample);
+        if (comments.size() == 0) {
+            return new ArrayList<>();
+        }
+        //获取去重的评论人
+        Set<Long> commentators = comments.stream().map(comment -> comment.getCommentator()).collect(Collectors.toSet());
+        List<Long> userIds = new ArrayList<>();
+        userIds.addAll(commentators);
+
+        //获取评论人并转换为Map
+        UserExample userExample = new UserExample();
+        userExample.createCriteria()
+                .andIdIn(userIds);
+        List<User> users = userMapper.selectByExample(userExample);
+        Map<Long, User> userMap = users.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
+
+
+        // 转换 comment 为 commentDTO
+        List<CommentDTO> commentDTOS = comments.stream().map(comment -> {
+            CommentDTO commentDTO = new CommentDTO();
+            BeanUtils.copyProperties(comment, commentDTO);
+            commentDTO.setLikeCount(likeService.findEntityLikeCount(2,commentDTO.getId()));
+            commentDTO.setLikeStatus(curUserId==-1?0:likeService.findEntityLikeStatus(2,commentDTO.getId(),curUserId));
+            commentDTO.setUser(userMap.get(comment.getCommentator()));
+            return commentDTO;
+        }).collect(Collectors.toList());
+
+        return commentDTOS;
     }
 
     public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type) {

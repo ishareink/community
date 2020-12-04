@@ -10,6 +10,7 @@ public class CommentDTO {
     private Long gmtCreate;
     private Long gmtModified;
     private Long likeCount;
+    private int likeStatus;
     private Integer commentCount;
     private String content;
     private User user;
@@ -92,5 +93,13 @@ public class CommentDTO {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public int getLikeStatus() {
+        return likeStatus;
+    }
+
+    public void setLikeStatus(int likeStatus) {
+        this.likeStatus = likeStatus;
     }
 }
