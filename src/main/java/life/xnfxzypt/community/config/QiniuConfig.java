@@ -12,7 +12,7 @@ public class QiniuConfig {
     //私钥
     private final String secretKey="8xgiyuEc6KFUGagJ7daCtfAVzOMQSScq5UknD0dH";
     //七牛域名
-    public final String url="http://qjqj3xxz9.hn-bkt.clouddn.com/";
+    public final String url="http://qiniusave.ishare.ink/";
     //空间名称
     public final String bucket = "isharecode";
 
