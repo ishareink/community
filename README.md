@@ -1,5 +1,20 @@
 # iShare社区
+##介绍
 
+iShare社区是仿elasticsearch社区项目，技术栈Springboot、MyBatis 、Redis、Bootstrap、MySQL。主要功能有gitee第三方登录、发布、标签、评论、回复、通知、分页、七牛云图片上传、点赞、Markdowm富文本编辑、搜索。
+
+## 技术栈
+
+|  技术   |  作用   |
+| --- | --- |
+| SSM | 后端 |
+|  Bootstrap、thymeleaf|前端|
+| gitee | 第三方登录 |
+| MySQL | 数据库 |
+| Redis | 点赞 |
+| Markdowm | 富文本编辑 |
+| flyway | 数据库版本控制 |
+| 七牛云 | 图片上传 |
 ## 资料
 [Spring 文档](https://spring.io/guides)    
 [Spring Web](https://spring.io/guides/gs/serving-web-content/)   
