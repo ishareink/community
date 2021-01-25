@@ -35,7 +35,6 @@ src/main/java/life/xnfxzypt/community/config/
 .vscode/
 
 ### file ###
-application.properties
 generatorConfig.xml
 pom.xml
 ### flyway ###
